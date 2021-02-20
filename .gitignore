@@ -1,0 +1,5 @@
+.git/
+.vscode/
+build/
+build.WINDOWS/
+build.LINUX/
