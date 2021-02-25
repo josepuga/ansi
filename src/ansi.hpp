@@ -22,9 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef ANSI_H
-#define ANSI_H
-#define ANSI_H_VERSION "1.0"
+#ifndef ANSI_HPP
+#define ANSI_HPP
+#define ANSI_HPP_VERSION "1.0"
 #include <string>
 #include <string_view>
 #include <vector>
