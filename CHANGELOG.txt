@@ -1,0 +1,8 @@
+1.0   - 2020  First Release.
+1.0.1 - 2021-02 
+	Added operator ==, != in ansi::rgb_t struct.
+	Added ansi::pos_t struct (x and y coordinates).
+	Added goto_xy(const ansi::post_t&) method.
+	ansi::rgb_t values are now uint8_t instead int
+
+				

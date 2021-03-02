@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2020 José Puga
+Copyright (c) 2020-2021 José Puga
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ SOFTWARE.
 
 #ifndef ANSI_HPP
 #define ANSI_HPP
-#define ANSI_HPP_VERSION "1.0"
+#define ANSI_HPP_VERSION "1.0.1"
 #include <string>
 #include <string_view>
 #include <vector>
@@ -46,10 +46,23 @@ namespace ansi {   //Warning: no error checked.
 
 namespace ansi {
     typedef struct rgb_t {
-        int r {0};
-        int g {0};
-        int b {0};
+        uint8_t r {0};
+        uint8_t g {0};
+        uint8_t b {0};
+        bool operator==(const rgb_t& rhs) const { 
+                return r == rhs.r && g == rhs.g && b == rhs.b; }
+        bool operator!=(const rgb_t& rhs) const {
+                return !(*this == rhs); }
     } rgb_t;
+
+    typedef struct pos_t {
+        int x {0};
+        int y {0};
+        bool operator==(const pos_t& rhs) const {
+                return x == rhs.x && y == rhs.y; }
+        bool operator!=(const pos_t& rhs) const {
+                return !(*this == rhs); }
+    } pos_t;
 
     //Standard 16 Foreground colors
     static const std::vector<std::string_view> _fg = {
@@ -175,7 +188,7 @@ namespace ansi {
      * @param b Blue 0-255
      * @return Ansi sequence.
      * */
-    inline const std::string fg_rgb(const int r, const int g, const int b) {
+    inline const std::string fg_rgb(const uint8_t r, const uint8_t g, const uint8_t b) {
         return  "\033[38;2;" + std::to_string(r) + ";" + std::to_string(g) + ";"
             + std::to_string(b) + "m";
     }
@@ -197,7 +210,7 @@ namespace ansi {
      * @param b Blue 0-255
      * @return Ansi sequence.
      * */
-    inline const std::string bg_rgb(const int r, const int g, const int b) {
+    inline const std::string bg_rgb(const uint8_t r, const uint8_t g, const uint8_t b) {
         return  "\033[48;2;" + std::to_string(r) + ";" + std::to_string(g) + ";"
             + std::to_string(b) + "m";
     }
@@ -288,6 +301,14 @@ namespace ansi {
      * */
 	inline const std::string goto_xy(const int x, const int y) { 
         return "\033[" + std::to_string(y) + ";" + std::to_string(x) + "f"; }
+
+	/**
+     * @brief Set cursor position.
+     * @param pos_t Struct with X and Y coordinates.
+     * @return Ansi sequence.
+     * */
+	inline const std::string goto_xy(const ansi::pos_t pos) { 
+        return goto_xy(pos.x, pos.y); }
 
 } //namespace
 
