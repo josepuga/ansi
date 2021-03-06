@@ -24,7 +24,7 @@ SOFTWARE.
 
 #ifndef ANSI_HPP
 #define ANSI_HPP
-#define ANSI_HPP_VERSION "1.0.1"
+#define ANSI_HPP_VERSION "1.0.2"
 #include <string>
 #include <string_view>
 #include <vector>
@@ -41,6 +41,8 @@ namespace ansi {   //Warning: no error checked.
 	static auto dummyFoo = GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &dwMode1);
     static DWORD dwMode2 = dwMode1 |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     static auto dummyFoo2 = SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), dwMode2);
+    // UTF8 for Windows. TODO: Restore old CP. But ansi must be a class...
+    static auto dummyFoo3 = SetConsoleOutputCP( CP_UTF8 );
 }
 #endif // _WIN32
 
@@ -194,6 +196,20 @@ namespace ansi {
     }
 
     /**
+     * @brief Set RGB foreground color
+     * @param color uint32_t color value.
+     * @return Ansi sequence.
+     * */
+    inline const std::string fg_rgb(const uint32_t c) {
+        auto r = (c >> 16) & 0xff;
+        auto g = (c >> 8) & 0xff;
+        auto b = c & 0xff;
+        return  "\033[38;2;" + std::to_string(r) + ";" + std::to_string(g) 
+            + ";" + std::to_string(b) + "m";
+    }
+
+
+    /**
      * @brief Set RGB background color
      * @param rgb_t Red (0-255), Green(0-255), Blue(0-255) struct.
      * @return Ansi sequence.
@@ -213,6 +229,19 @@ namespace ansi {
     inline const std::string bg_rgb(const uint8_t r, const uint8_t g, const uint8_t b) {
         return  "\033[48;2;" + std::to_string(r) + ";" + std::to_string(g) + ";"
             + std::to_string(b) + "m";
+    }
+
+    /**
+     * @brief Set RGB background color
+     * @param color uint32_t color value.
+     * @return Ansi sequence.
+     * */
+    inline const std::string bg_rgb(const uint32_t c) {
+        auto r = (c >> 16) & 0xff;
+        auto g = (c >> 8) & 0xff;
+        auto b = c & 0xff;
+        return  "\033[48;2;" + std::to_string(r) + ";" + std::to_string(g) 
+            + ";" + std::to_string(b) + "m";
     }
 
     /**

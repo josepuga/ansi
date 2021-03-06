@@ -4,6 +4,7 @@
 #include <thread> 
 #include <chrono> 
 #include <map>
+#include <variant>
 #include "ansi.hpp"     //Only one header
 
 using namespace std;
@@ -25,11 +26,14 @@ void ClearAndReset()
 }
 int main()
 { 
+    cout << "Holá ñaña middle·dot";
+    Pause();
+    return 0;
     //TEST STANDARD 16 FOREGROUNDS COLORS    
     ClearAndReset();
     cout << ansi::right(10) << ansi::underline << 
           "FOREGROUND STANDARD 16 COLORS TEST:" << ansi::reset;
-    cout << "\nUsing " << ansi::bold << "'ansi::fg(n)'" << 
+    cout << "\nUsing " << ansi::yellow << "ansi::fg(n)" << 
         ansi::reset << ". Where n = 0-15:\n\n";
 
     auto maxColums = 8, colum = 0; //Demo with 80 colums
@@ -46,7 +50,7 @@ int main()
     //TEST STANDARD 16 BACKGROUNDS COLORS    
     cout << "\n\n\n" << ansi::right(10) << ansi::underline <<
         "BACKGROUND STANDARD 16 COLORS TEST:" << ansi::reset;
-    cout << "\nUsing " << ansi::bold << "'ansi::bg(n)'" << 
+    cout << "\nUsing " << ansi::yellow << "ansi::bg(n)" << 
         ansi::reset << ". Where n = 0-15:\n\n";
     colum = 0;
     for (auto i = 0; i < 16; i++) {
@@ -64,8 +68,8 @@ int main()
     //TEST GREYSCALE FOREGROUND COLORS    
     cout << ansi::right(10) << ansi::underline << "GREYSCALE COLORS TEST:" << 
         ansi::reset;
-    cout << "\n\nTest Foreground Greyscale using " << ansi::bold << 
-        "'ansi::fg_grey(n)'" << ansi::reset << " where n = 0-23:\n\n";
+    cout << "\n\nTest Foreground Greyscale using " << ansi::yellow << 
+        "ansi::fg_grey(n)" << ansi::reset << " where n = 0-23:\n\n";
     colum = 0;
     for (auto i = 0; i < 24; i++) {
         cout << ansi::bg_black << ansi::white << " " << setw(3) << i << "=";
@@ -79,8 +83,8 @@ int main()
 
     //TEST GREYSCALE BACKGROUND COLORS    
     cout << ansi::reset;
-    cout << "\n\n\nTest Background Greyscale using " << ansi::bold
-        << "'ansi::bg_grey(n)'" << ansi::reset << " where n = 0-23:\n\n";
+    cout << "\n\n\nTest Background Greyscale using " << ansi::yellow
+        << "ansi::bg_grey(n)" << ansi::reset << " where n = 0-23:\n\n";
     colum = 0;
     for (auto i = 0; i < 24; i++) {
         cout << ansi::bg_black << ansi::white << " " << setw(3) << i << "=";
@@ -97,12 +101,16 @@ int main()
     //TEST COLOR NAMED
     cout << ansi:: goto_xy(1,4) << "The most common and most compatible colors"
         << " are the first 16.\nYou can use they directly with the color name."
-        << "\nLike " << ansi::blue << "'ansi::blue' or 'ansi::fg_blue'" << 
-        ansi::reset << " for normal foreground blue,\nor " << ansi::fg_b_blue << 
-        "'ansi::fb_b_blue'" << ansi::reset << " for bold foreground blue.\n\n";
+        << "\n" <<
+        "Like " << ansi::blue << "ansi::blue" << ansi::reset << " or " <<
+        ansi::fg_blue << "ansi::fg_blue" << ansi::reset << 
+        " for normal foreground blue,\n" << 
+        "or " << ansi::fg_b_blue << "ansi::fb_b_blue" << ansi::reset << 
+        " for bold foreground blue.\n\n";
     cout << "Same for background colors. Normal like " << ansi::bg_green <<
-        "'ansi::bg_green'" << ansi::reset << ".\nAnd bold version " <<
-        ansi::bg_b_green << "ansi::bg_b_green" << ansi::reset << ".\n";
+        "'ansi::bg_green'" << ansi::reset << ".\n" <<
+        "And bold version " << ansi::bg_b_green << "ansi::bg_b_green" << 
+        ansi::reset << ".\n";
     cout << "ansi_fg::XXX (or ansi::XXX), ansi::fg_b_XXX, ansi::bg_XXX, ansi::"
         << "bg_b_XXX.\nWhere XXX can be: red, green, yellow, blue, "
         << "magenta, cyan, white, black. (8 normal + 8 bold = 16)\n";
@@ -110,25 +118,25 @@ int main()
     ClearAndReset();
 
     //TEST RGB COLORS
-    cout << "Of course, RBG colors are availables.\n" << ansi::bold << 
-        "'ansi::rgb(const int r, const int g, const int b)'" << ansi::reset <<
-        " or with rgb type ansi::rgb_t\n" << ansi::bold << 
-        "'ansi::rgb(const ansi::rgb_t&)'\n" << ansi::reset;
+    cout << "Of course, RBG colors are availables. fg_rgb or bg_rgb:\n" << ansi::yellow << 
+        "ansi::fg_rgb(const uint32_t color)\n" <<
+        "ansi::fg_rgb(const uint8_t r, const uint8_t g, const uint8_t b)\n" <<
+        "ansi::fg_rgb(const ansi::rgb_t& rgb)\n\n" << ansi::reset;
 
     //Common HTML color names: https://www.w3schools.com/colors/colors_names.asp
-    const map<string, ansi::rgb_t> commonsRGB {
-        {"Maroon", {128, 0, 0}},
-        {"Olive", {128, 128, 0}},
-        {"Aqua", {0, 255, 55}},
-        {"Purple", {128, 0, 128}},
-        {"Khaki", {0xf0, 0Xe6, 0x8c}},
-        {"Sienna", {0xa0, 0x52, 0x2d}},
-        {"Teal", {0, 0x80, 0x80}},
-        {"Torquoise", {0x40, 0xe0, 0xd0}},
-        {"Wheat", {0xf5, 0xde, 0xb3}},
-        {"Indigo", {0x4b, 0, 0x82}},
-        {"Azure", {0xf0, 0xff, 0xff}},
-        {"Almond",{0xff, 0xeb, 0xcd}}
+    map<string, int> commonsRGB {
+        {"Maroon", 0x800000},
+        {"Olive", 0x808000},
+        {"Aqua", 0x00FF37},
+        {"Purple", 0X800080},
+        {"Sienna", 0xa0522d},
+        {"Teal", 0x008080},
+        {"Torquoise", 0x40e0d0},
+        {"Khaki", 0xf0e68c},
+        {"Wheat", 0xf5deb3},
+        {"Indigo", 0x4b0082},
+        {"Azure", 0xf0ffff},
+        {"Almond",0xffebcd}
     };
     maxColums = 4;
     colum = 0;
@@ -163,7 +171,9 @@ int main()
     ClearAndReset();
     //TEST SAVE/RESTORE CURSOR POSITION
     cout << "\n\nYou can save and restore the cursor position at any time with\n" <<
-        "'ansi::save_position' and 'ansi::restore_position'. Now press ENTER" <<
+        ansi::yellow << "ansi::save_position" << ansi::reset << " and " << 
+        ansi::yellow << "ansi::restore_position" << ansi::reset << ".\n" <<
+        "Now press " << ansi::underline << "ENTER" << ansi::reset << 
         " to save your cursor position.\n" << ansi::save_position;
     cin.get();
     cout << "Press ENTER again to restore the position and write the text " <<
@@ -177,9 +187,9 @@ int main()
     ClearAndReset();
     cout << ansi::goto_xy(1, 10);
     cout << "Two of the most powerful features are\n" << ansi::yellow << 
-        "'ansi::goto_xy(x, y)'" << ansi::reset << " and " << ansi::yellow <<
+        "ansi::goto_xy(x, y)" << ansi::reset << " and " << ansi::yellow <<
         "ansi::up(), down(), left() or right()" << ansi::reset << ".\n" <<
-        "In this sample I'm using " << ansi::yellow << "'ansi::hide_cursor'" <<
+        "In this sample I'm using " << ansi::yellow << "ansi::hide_cursor" <<
         ansi::reset << " too.\n\n" << 
         ansi::hide_cursor << ansi::save_position;
     srand(time(0)); // Yes I know!. Rand and Seed C style...
